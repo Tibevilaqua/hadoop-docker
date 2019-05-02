@@ -1,0 +1,6 @@
+#Dataset descriptor for parquet
+#Tue Apr 09 11:52:31 UTC 2019
+location=hdfs\://namenode\:8020/user/cloudera/problem5/customer/parquet
+version=1
+compressionType=snappy
+format=parquet

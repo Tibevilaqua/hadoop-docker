@@ -1,0 +1,7 @@
+sales,bob@abc.com,6,2019-03-25 08:35:51.0,bob
+sales,bob@abc.com,7,2019-03-25 08:35:51.0,bob
+sales,bob@abc.com,8,2019-03-25 08:35:51.0,bob
+sales,bob@abc.com,9,2019-03-25 08:35:51.0,bob
+sales,bob@abc.com,10,2019-03-25 08:35:51.0,bob
+engineering,ali\ce@abc.com,11,2019-03-25 11:42:30.0,alice
+engineering,ali\ce@a\bc.com,12,2019-03-25 11:42:31.0,alice

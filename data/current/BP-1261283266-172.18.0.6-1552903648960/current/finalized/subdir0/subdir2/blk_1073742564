@@ -1,0 +1,25 @@
+{
+  "type" : "record",
+  "name" : "customers",
+  "doc" : "Sqoop import of customers",
+  "fields" : [ {
+    "name" : "customer_id",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "customer_id",
+    "sqlType" : "4"
+  }, {
+    "name" : "customer_fname",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "customer_fname",
+    "sqlType" : "12"
+  }, {
+    "name" : "customer_city",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "customer_city",
+    "sqlType" : "12"
+  } ],
+  "tableName" : "customers"
+}

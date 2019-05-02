@@ -1,0 +1,64 @@
+version: "3"
+services:
+
+  namenode:
+    image: uhopper/hadoop-namenode
+    hostname: namenode
+    container_name: namenode
+    build: namenode
+    volumes:
+      - /Users/tbevilaqua/opt/docker/hadoop-docker/bane:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=myCluster
+    ports:
+      - "12345:12345"
+
+  datanode1:
+    image: uhopper/hadoop-datanode
+    hostname: datanode1
+    container_name: datanode1
+    volumes:
+      - /Users/tbevilaqua/opt/docker/hadoop-docker/data:/hadoop/dfs/data
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+
+  resourcemanager:
+    image: uhopper/hadoop-resourcemanager
+    hostname: resourcemanager
+    container_name: resourcemanager
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - YARN_CONF_yarn_log___aggregation___enable=true
+
+  nodemanager1:
+    image: uhopper/hadoop-nodemanager
+    hostname: nodemanager1
+    container_name: nodemanager1
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - YARN_CONF_yarn_resourcemanager_hostname=resourcemanager
+      - YARN_CONF_yarn_log___aggregation___enable=true
+      - YARN_CONF_yarn_nodemanager_remote___app___log___dir=/app-logs
+
+  spark:
+    image: uhopper/hadoop-spark
+    hostname: spark
+    container_name: spark
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - YARN_CONF_yarn_resourcemanager_hostname=resourcemanager
+    command: tail -f /var/log/dmesg
+    volumes:
+      - /Users/tbevilaqua/opt/docker/hadoop-docker/spark/volume:/opt/spark
+    ports:
+      - "9999:9999"
+  mysql:
+    hostname: mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: hdfs
+      MYSQL_USER: hdfs
+      MYSQL_PASSWORD: hdfs
+      MYSQL_DATABASE: db_test
+    volumes:
+      - './mysql/sql:/docker-entrypoint-initdb.d'

@@ -1,0 +1,6 @@
+#Dataset descriptor for tab2
+#Tue Apr 16 07:14:54 UTC 2019
+location=hdfs\://namenode\:8020/user/cloudera/problem2/customer/tab2
+version=1
+compressionType=snappy
+format=parquet

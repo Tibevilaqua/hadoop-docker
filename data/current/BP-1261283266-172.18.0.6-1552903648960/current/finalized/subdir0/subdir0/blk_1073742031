@@ -1,0 +1,6 @@
+#Dataset descriptor for parquet
+#Thu Apr 11 11:14:07 UTC 2019
+location=hdfs\://namenode\:8020/user/root/11/customers/parquet
+version=1
+compressionType=snappy
+format=parquet
