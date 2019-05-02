@@ -1,0 +1,167 @@
+Sqoop:
+
+https://sqoop.apache.org/docs/1.4.6/SqoopUserGuide.html
+ 1 - Understand the Sqoop-metastore commands
+ 2 - Understand each import control arguments:
+ 3 - Import from mysql using file formats (as text, default, parquetFile, Sequence and verify default)
+ 4 - Use compress and  compression-codec arguments
+
+
+
+Hadoop:
+
+Learn Hadoop commands (see required commands here https://www.cloudera.com/about/training/certification/cca-spark.html)
+"hadoop fs" is always written before the next subset of commands. i.e ls > "hadoop fs ls /opt/midir"
+
+
+Hadoop standard configuration dir:
+/etc/haddop/conf
+
+Search for this:
+https://spark.apache.org/docs/2.2.0/sql-programming-guide.html#saving-to-persistent-tables
+
+
+Commands:
+
+
+#Hadoop node
+
+hdfs dfsadmin -safemode leave
+
+rm /opt/hadoop-2.8.1/share/hadoop/common/lib/avro-1.7.4.jar
+cp /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/avro-1.8.1.jar /opt/hadoop-2.8.1/share/hadoop/common/lib/
+rm /opt/hadoop-2.8.1/share/hadoop/mapreduce/lib/avro-1.7.4.jar
+cp /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/avro-1.8.1.jar /opt/hadoop-2.8.1/share/hadoop/mapreduce/lib/
+rm /opt/hadoop-2.8.1/share/hadoop/tools/lib/avro-1.7.4.jar
+cp /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/avro-1.8.1.jar /opt/hadoop-2.8.1/share/hadoop/tools/lib/
+cp /opt/apache-hive-2.3.4-bin/lib/hive-common-2.3.4.jar /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/
+
+export HIVE_HOME="/opt/apache-hive-2.3.4-bin/"
+export PATH=$PATH:$HIVE_HOME/bin
+export HADOOP_HOME=/opt/hadoop-2.8.1
+export HADOOP_HDFS_HOME=/opt/hadoop-2.8.1
+export YARN_HOME=/opt/hadoop-2.8.1
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+
+unset HADOOP_COMMON_LIB_NATIVE_DIR
+
+hdfs dfs -mkdir -p /user/hive/warehouse
+hdfs dfs -mkdir /tmp
+hdfs dfs -chmod g+w /user/hive/warehouse
+hdfs dfs -chmod g+w /tmp
+
+/opt/apache-hive-2.3.4-bin/bin/schematool -initSchema -dbType derby
+
+
+
+#Hive Set-up
+https://www.edureka.co/blog/apache-hive-installation-on-ubuntu
+
+
+#Spark node
+
+rm /opt/hadoop-2.8.1/share/hadoop/tools/lib/avro-1.7.4.jar
+rm /opt/hadoop-2.8.1/share/hadoop/mapreduce/lib/avro-1.7.4.jar
+rm /opt/hadoop-2.8.1/share/hadoop/common/lib/avro-1.7.4.jar
+
+
+cp /opt/spark/avro-1.8.1.jar /opt/hadoop-2.8.1/share/hadoop/tools/lib/
+cp /opt/spark/avro-1.8.1.jar /opt/hadoop-2.8.1/share/hadoop/mapreduce/lib/
+cp /opt/spark/avro-1.8.1.jar /opt/hadoop-2.8.1/share/hadoop/common/lib/
+
+
+# Start spark with databricks dependency
+spark-shell --packages com.databricks:spark-avro_2.11:4.0.0
+
+
+
+Sqoop commands:
+
+Import table test into HDFS:
+
+Append:
+
+sqoop import --connect jdbc:mysql://mysql/db_test     --username hdfs --password hdfs --table test --target-dir ha6 --bindir /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/ --append
+
+id > 5
+
+sqoop import --connect jdbc:mysql://mysql/db_test     --username hdfs --password hdfs --table test --target-dir ha6 --bindir /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/ --where "id > 5" --columns "id,name,email"
+
+--fields-terminated-by
+
+sqoop import --connect jdbc:mysql://mysql/db_test     --username hdfs --password hdfs --table test --target-dir ha6 --bindir /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/ --where "id > 5" --columns "id,name,email" --fields-terminated-by - --escape-by \\
+
+
+Free Query
+
+sqoop import --connect jdbc:mysql://mysql/db_test --username hdfs --password hdfs --query 'SELECT * FROM test WHERE $CONDITIONS' --split-by test.id --target-dir ha8 --bindir /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/
+
+Export from HDFS into MYSQL
+
+sqoop export --connect jdbc:mysql://mysql/db_test --username hdfs --password hdfs --table test2 --export-dir ha23 --bindir /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/
+
+Update
+
+sqoop export --connect jdbc:mysql://mysql/db_test --username hdfs --password hdfs --table test2 --export-dir ha25 --bindir /opt/sqoop-1.4.7.bin__hadoop-2.6.0/lib/ --update-key id --update-mode allowinsert
+
+
+
+Flume:
+
+/opt/flume/apache-flume-1.9.0-bin/bin/flume-ng agent -n agent -c conf -f /opt/flume/hello-world.conf -Dflume.root.logger=INFO,console
+
+
+spark-submit --class NetworkWordCount /opt/spark/hello-world_2.11-1.0.jar 0.0.0.0 9999
+
+Hadoop
+
+ Add file to HDFS
+ hdfs dfs -put people.json  <destination dir>
+ hdfs dfs -get  <source dir> <fileName>
+
+
+SparkSQL DataSets and DataFrames
+
+
+Spark conversion (parquet to json)
+Read Avro: val df = spark.read.format("com.databricks.spark.avro").load("/user/cloudera/problem2/avro/part-m-00000.avro")
+
+
+val spark = SparkSession.builder().appName("Spark SQL basic example").config("spark.some.config.option", "some-value").getOrCreate()
+
+
+
+case class Customers(custId:String,name:String)
+case class Orders(ordId:String,custId:String,status:String)
+val cusDF= sc.textFile("/user/cloudera/practice4/question3/customers/").map(x => x.split(",")).map(c => Customers(c(0),c(1))).toDF()
+val ordDF= sc.textFile("/user/cloudera/practice4/question3/orders/").map(x => x.split(",")).map(o => Orders(o(0),o(2),o(3))).toDF()
+val filDF= cusDF.join(ordDF,"custId").filter("status like '%PENDING%'")
+filDF.rdd.map(x => x.mkString(",")).saveAsTextFile("/user/cloudera/p1/q7/output")
+
+
+
+case class Customers(custId:String,name:String)
+case class Orders(ordId:Integer,custId:String,status:String)
+val cusDF= sc.textFile("/user/cloudera/practice4/question3/customers/").map(x => x.split(",")).map(c => Customers(c(0),c(1))).toDF()
+val ordDF= sc.textFile("/user/cloudera/practice4/question3/orders/").map(x => x.split(",")).map(o => Orders(o(2).toInt,o(0),o(3))).toDF()
+val filDF= cusDF.join(ordDF,"custId").filter("status like '%pending%'")
+filDF.rdd.map(x => x.mkString(",")).saveAsTextFile("/user/cloudera/p1/q7/output")
+
+
+
+case class Customer(custId,name,city:String)
+var custData = sc.textFile("/user/cloudera/problem6/customer/text").map(x=> x.split("\t")).map(c => Customer(c(0),c(1),c(2))).toDF
+val filteredData = custData.filter("city='Brownsville'")
+filteredData.write.json("/user/cloudera/problem6/customer_Brownsville");
+
+
+val custDF = sqlContext.read.format("com.databricks.spark.avro").load("/user/cloudera/practice1/problem7/customer/avro")
+custDF.map(x => x(0)+"\t"+x(1)+"\t"+x(2)).saveAsTextFile("/user/cloudera/practice1/problem7/customer_text_gzip",classOf[org.apache.hadoop.io.compression.GzipCodec])
+
+
+Important Information:
+
+In case hivecontext does not get created in your environment or table not found issue occurs. Just check that SPARK_HOME/conf has hive_site.xml copied from /etc/hive/conf/hive_site.xml. If in case any derby lock issue occurs, delete SPARK_HOME/metastore_db/dbex.lck   to release the lock.
+
+
+CREATE TABLE customers (id INT, name STRING,  city STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' LOCATION '/user/cloudera/problem9/customer_text';
